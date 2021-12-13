@@ -6,7 +6,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { SCREEN_MESSAGE } from "../constants/ScreenMessage";
 
-const ContractorButtonView = ({ getData }) => {
+const ContractorButtonView = ({ getChildData }) => {
   
   const LOG_TAG = "[ContractorButtonView] ";
   const NUM_BTN = 4;
@@ -14,7 +14,7 @@ const ContractorButtonView = ({ getData }) => {
 
   const selectedHandler = async (index) => {
     console.log(LOG_TAG + "Click btn index " + index);
-    await getData(index);
+    await getChildData(index);
     newArr = [];
     for (let i = 0; i < NUM_BTN; i++) {
       newArr.push(false);

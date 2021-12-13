@@ -4,13 +4,15 @@ import { TabView, SceneMap } from "react-native-tab-view";
 import InvestorHome from "./InvestorHome";
 import ContractorHome from "./ContractorHome";
 
-const renderScene = SceneMap({
-  first: ContractorHome,
-  second: InvestorHome
-});
+// const renderScene = SceneMap({
+//   first: ContractorHome,
+//   second: InvestorHome
+// });
+
 
 const Home = ({ navigation }) => {
 
+  const LOG_TAG = "[Home screen] ";
   const layout = useWindowDimensions();
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
@@ -18,8 +20,21 @@ const Home = ({ navigation }) => {
     {key: "second", title: "NHA DAU TU"},
   ]);
 
-  const pressHandler = () => {
-    navigation.navigate("BiddingDetails");
+  const pressHandler = (objId) => {
+    console.log(LOG_TAG + "object id = " + objId);
+    navigation.navigate("BiddingDetails", { id: objId });
+  }
+
+  const renderScene = ({ route }) => {
+    switch (route.key) {
+      case 'first':
+        return <ContractorHome getObjId={pressHandler}/>
+  
+      case 'second':
+        return <InvestorHome />
+      default:
+        return null;
+    }
   }
 
   return (

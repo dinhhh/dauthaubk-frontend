@@ -1,10 +1,13 @@
 import React from "react";
 import { Text, View } from "react-native";
   
-const BiddingDetails = ({ objId }) => {
+const BiddingDetails = ({ route }) => {
+
+  const LOG_TAG = "[BiddingDetails] ";
+  // console.log(LOG_TAG + "obj id = " + route.params.id);
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-      <Text style={{ color: "#006600", fontSize: 40 }}>Bidding details {objId} screen!</Text>
+      <Text style={{ color: "#006600", fontSize: 40 }}>Bidding details {route.params.id} screen!</Text>
     </View>
   );
 };
