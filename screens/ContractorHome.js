@@ -6,6 +6,7 @@ import BriefInfoContainer from "../components/BriefInfoContainer";
 import { API_PATH } from "../config/Api";
 import { getApi } from "../utils/ApiCaller";
 import ContractorBiddingInvitation from "../components/ContractorBiddingInvitationsContainer";
+import ContractorSelectionPlan from "../components/ContractorSelectionPlanContainer";
 
 const ContractorHome = () => {
 
@@ -22,7 +23,7 @@ const ContractorHome = () => {
         return [];
       });
       setPage(0);
-      setData(childData);
+      setData(prev => childData);
       getData(childData, 0);
     }
   }
@@ -37,6 +38,11 @@ const ContractorHome = () => {
       case 2:
         path = API_PATH.CONTRACTOR_BIDDING_INVITATIONS;
         setHeaderMessage(SCREEN_MESSAGE.THONG_BAO_MOI_THAU);
+        break;
+      case 0:
+        path = API_PATH.CONTRACTOR_SELECTION_PLANS;
+        setHeaderMessage(SCREEN_MESSAGE.KE_HOACH_CHON_NHA_THAU);
+        break;
       default:
         break;
     }
@@ -78,6 +84,14 @@ const ContractorHome = () => {
           publishDate={item["Ngày đăng tải"]}
           category={item["Hình thức dự thầu"]}
           location={item["Địa điểm thực hiện gói thầu"]} />
+
+        case 0:
+          return <ContractorSelectionPlan 
+          biddingName={item["Thông tin chi tiết"]["Tên KHLCNT"]} 
+          bidSolicitor={item["Thông tin chi tiết"]["Bên mời thầu"]}
+          publishDate={item["Ngày đăng tải"]}
+          category={item["Thông tin chi tiết"]["Phân loại"]}
+          cost={item["Giá dự toán"]} />
         default:
           break;
       }
