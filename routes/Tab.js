@@ -5,6 +5,7 @@ import HomeStack from "./HomeStack";
 import Register from "../screens/Register";
 import News from "../screens/News";
 import Settings from "../screens/Settings";
+import ContractorSearch from "../screens/ContractorSearch";
 
 const Tab = createBottomTabNavigator();
 
@@ -12,6 +13,7 @@ const Tabs = () => {
   return (
     <Tab.Navigator>
       <Tab.Screen name='HomeScreen' component={HomeStack} options={{ headerShown: false }}></Tab.Screen>
+      <Tab.Screen name='Searching' component={ContractorSearch} ></Tab.Screen>
       <Tab.Screen name='RegisterScreen' component={Register} ></Tab.Screen>
       <Tab.Screen name='NewsScreen' component={News} ></Tab.Screen>
       <Tab.Screen name='SettingsScreen' component={Settings} ></Tab.Screen>
