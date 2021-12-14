@@ -7,6 +7,7 @@ import { getApi, postApi } from '../utils/ApiCaller';
 import { API_PATH } from '../config/Api';
 import SearchByGoodResult from '../components/SearchByGoodResult';
 import BriefInfoContainer from '../components/BriefInfoContainer';
+import ContractorBriefInfo from '../components/ContractorBriefInfo';
 
 const data = [
   { label: SCREEN_MESSAGE.GIA_HANG_HOA, value: '1', api_path: API_PATH.SEARCH_GOODS_BY_NAME },
@@ -16,6 +17,7 @@ const data = [
   // { label: SCREEN_MESSAGE.KET_QUA_SO_TUYEN, value: '5' },
   // { label: SCREEN_MESSAGE.KET_QUA_MO_THAU_DIEN_TU, value: '6' },
   { label: SCREEN_MESSAGE.KET_QUA_LUA_CHON_NHA_THAU, value: '7', api_path: API_PATH.CONTRACTOR_SELECTION_RESULTS },
+  { label: SCREEN_MESSAGE.NHA_THAU, value: '8', api_path: API_PATH.SEARCH_CONTRACTOR_INFO }
 ];
 
 const ContractorSearch = () => {
@@ -48,7 +50,7 @@ const ContractorSearch = () => {
       setFetchedData(prev => response["data"]);
       return;
     } 
-    if (keyword != '' && value == '7') {
+    if (keyword != '') {
       const obj = getObjByValue(value);
       if (obj !== undefined) {
         const path = obj["api_path"];
@@ -87,6 +89,10 @@ const ContractorSearch = () => {
           contractorWin={item["Kết quả"]["Nhà thầu trúng thầu"]}
           winCost={item["Kết quả"]["Giá trúng thầu"]}
           biddingId={item["_id"]["$oid"]} />
+
+      case '8':
+        return <ContractorBriefInfo 
+        data={item} />
       default:
         break;
     }
@@ -226,7 +232,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 8,
     margin: 16,
-    width: 400,
   },
   
 });

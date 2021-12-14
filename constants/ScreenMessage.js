@@ -27,4 +27,6 @@ export const SCREEN_MESSAGE = {
     XOA_BO_LOC: "Xóa bộ lọc",
     
     GIA_HANG_HOA: "Giá hàng hóa",
+
+    NHA_THAU: "Nhà thầu",
 }
