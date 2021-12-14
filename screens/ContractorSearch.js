@@ -45,7 +45,6 @@ const ContractorSearch = () => {
     if (keyword != '' && value == '1') {
       const response = await getApi(API_PATH.SEARCH_GOODS_BY_NAME + "/" + keyword);
       setFetchedData(prev => response["data"]);
-      console.log("Fetched = " + JSON.stringify(fetchedData));
       return;
     } else {
       const obj = getObjByValue(value);
@@ -68,12 +67,7 @@ const ContractorSearch = () => {
   }
 
   const renderItemFlatList = ({ item }) => {
-    console.log("RENDER ITEM FLAT LIST with value = " + value);
-    // return <SearchByGoodResult 
-    //       biddingName={item["Tên gói thầu"]}
-    //       bidSolicitor={item["Bên mời thầu"]}
-    //       winContractor={item["Nhà thầu trúng thầu"]}
-    //       goods={item["Hàng hóa"]} />
+    console.log("render flat list with value " + value);
     switch (value) {
       case '1':
         return <SearchByGoodResult 
@@ -81,7 +75,6 @@ const ContractorSearch = () => {
           bidSolicitor={item["Bên mời thầu"]}
           winContractor={item["Nhà thầu trúng thầu"]}
           goods={item["Hàng hóa"]} />
-        break;
     
       case '7':
         return <BriefInfoContainer 
@@ -107,6 +100,16 @@ const ContractorSearch = () => {
     return res;
   }
 
+  const EmptyListMessage = ({ item }) => {
+    return (
+      <Text
+        style={styles.emptyListStyle}
+        onPress={() => getItem( item )}>
+        No Data Found
+      </Text>
+    );
+  };
+
   return (
     <View>
       <Dropdown
@@ -125,6 +128,7 @@ const ContractorSearch = () => {
         value={value}
         onChange={item => {
           setValue(item.value);
+          setFetchedData(prev => []);
         }}
         renderLeftIcon={() => (
             <AntDesign style={styles.icon} color="black" name="Safety" size={20} />
@@ -138,7 +142,7 @@ const ContractorSearch = () => {
       onChangeText={(text) => setKeyword(text)} 
       />
 
-      <View style={{flexDirection: "row", justifyContent: 'space-around', marginTop: 15}}>
+      <View style={{flexDirection: "row", justifyContent: 'space-around', marginTop: 15, paddingBottom: 5}}>
         <Button title={SCREEN_MESSAGE.XOA_BO_LOC} 
         color={"#B3C100"} 
         style={styles.button} 
@@ -154,7 +158,8 @@ const ContractorSearch = () => {
       <FlatList
       data={fetchedData}
       keyExtractor={item => item["_id"]["$oid"]}
-      renderItem={renderItemFlatList}></FlatList>
+      renderItem={renderItemFlatList} 
+      ListEmptyComponent={EmptyListMessage} ></FlatList>
 
     </View>
   );
