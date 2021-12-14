@@ -108,7 +108,6 @@ const styles = StyleSheet.create({
   header: { 
     height: 50,
     backgroundColor: "#bfbfbb",
-    fontWeight: "bold",
   },
 
   row: {

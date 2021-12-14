@@ -14,7 +14,7 @@ const BriefInfoContainer = ({ biddingName, bidSolicitor, publishDate, contractor
   }
 
   return (
-    <TouchableOpacity onPress={clickOpacityHandler}>
+    <TouchableOpacity >
       <View style={styles.container}>
         <Text style={styles.biddingName} numberOfLines={2} ellipsizeMode="tail">{biddingName}</Text>
         <Text style={styles.basicText} numberOfLines={1} ellipsizeMode="tail">Bên mời thầu: {bidSolicitor}</Text>

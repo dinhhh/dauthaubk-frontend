@@ -3,25 +3,27 @@ import { StyleSheet, View, Text, TextInput, Button, TouchableOpacity, FlatList }
 import { Dropdown } from 'react-native-element-dropdown';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { SCREEN_MESSAGE } from '../constants/ScreenMessage';
-import { getApi } from '../utils/ApiCaller';
+import { getApi, postApi } from '../utils/ApiCaller';
 import { API_PATH } from '../config/Api';
 import SearchByGoodResult from '../components/SearchByGoodResult';
+import BriefInfoContainer from '../components/BriefInfoContainer';
 
 const data = [
-  { label: SCREEN_MESSAGE.GIA_HANG_HOA, value: '1' },
-  { label: SCREEN_MESSAGE.KE_HOACH_CHON_NHA_THAU, value: '2' },
-  { label: SCREEN_MESSAGE.THONG_BAO_MOI_SO_TUYEN, value: '3' },
-  { label: SCREEN_MESSAGE.THONG_BAO_MOI_THAU, value: '4' },
-  { label: SCREEN_MESSAGE.KET_QUA_SO_TUYEN, value: '5' },
-  { label: SCREEN_MESSAGE.KET_QUA_MO_THAU_DIEN_TU, value: '6' },
-  { label: SCREEN_MESSAGE.KET_QUA_LUA_CHON_NHA_THAU, value: '7' },
+  { label: SCREEN_MESSAGE.GIA_HANG_HOA, value: '1', api_path: API_PATH.SEARCH_GOODS_BY_NAME },
+  // { label: SCREEN_MESSAGE.KE_HOACH_CHON_NHA_THAU, value: '2', api_path: API_PATH.CONTRACTOR_SELECTION_PLANS },
+  // { label: SCREEN_MESSAGE.THONG_BAO_MOI_SO_TUYEN, value: '3' },
+  // { label: SCREEN_MESSAGE.THONG_BAO_MOI_THAU, value: '4' },
+  // { label: SCREEN_MESSAGE.KET_QUA_SO_TUYEN, value: '5' },
+  // { label: SCREEN_MESSAGE.KET_QUA_MO_THAU_DIEN_TU, value: '6' },
+  { label: SCREEN_MESSAGE.KET_QUA_LUA_CHON_NHA_THAU, value: '7', api_path: API_PATH.CONTRACTOR_SELECTION_RESULTS },
 ];
 
 const ContractorSearch = () => {
-  
+
   const [value, setValue] = useState(null);
   const [keyword, setKeyword] = useState('');
   const [fetchedData, setFetchedData] = useState([]);
+  const [page, setPage] = useState(0);
 
   const renderItem = (item) => {
     return (
@@ -40,25 +42,70 @@ const ContractorSearch = () => {
   };
 
   const searchBtnHandler = async () => {
-    console.log("Start search keyword = " + keyword);
-    if (keyword != '') {
+    if (keyword != '' && value == '1') {
       const response = await getApi(API_PATH.SEARCH_GOODS_BY_NAME + "/" + keyword);
       setFetchedData(prev => response["data"]);
+      console.log("Fetched = " + JSON.stringify(fetchedData));
+      return;
+    } else {
+      const obj = getObjByValue(value);
+      if (obj !== undefined) {
+        const path = obj["api_path"];
+        const requestBody = {
+          "keyword": keyword,
+        };
+        const response = await postApi(path, requestBody);
+        setFetchedData(prev => response["data"]);
+        return;
+      }
     }
   }
 
   const resetBtnHandler = () => {
     setFetchedData(prev => []);
-    setKeyword(prev => '');
+    const obj = getObjByValue(value);
+    console.log(JSON.stringify(obj));
   }
 
   const renderItemFlatList = ({ item }) => {
-    return <SearchByGoodResult 
-    biddingName={item["Tên gói thầu"]}
-    bidSolicitor={item["Bên mời thầu"]}
-    winContractor={item["Nhà thầu trúng thầu"]}
-    goods={item["Hàng hóa"]} />
+    console.log("RENDER ITEM FLAT LIST with value = " + value);
+    // return <SearchByGoodResult 
+    //       biddingName={item["Tên gói thầu"]}
+    //       bidSolicitor={item["Bên mời thầu"]}
+    //       winContractor={item["Nhà thầu trúng thầu"]}
+    //       goods={item["Hàng hóa"]} />
+    switch (value) {
+      case '1':
+        return <SearchByGoodResult 
+          biddingName={item["Tên gói thầu"]}
+          bidSolicitor={item["Bên mời thầu"]}
+          winContractor={item["Nhà thầu trúng thầu"]}
+          goods={item["Hàng hóa"]} />
+        break;
+    
+      case '7':
+        return <BriefInfoContainer 
+          biddingName={item["Thông tin chi tiết"]["Tên gói thầu"]} 
+          bidSolicitor={item["Thông tin chi tiết"]["Bên mời thầu"]}
+          publishDate={item["Ngày đăng tải"]}
+          contractorWin={item["Kết quả"]["Nhà thầu trúng thầu"]}
+          winCost={item["Kết quả"]["Giá trúng thầu"]}
+          biddingId={item["_id"]["$oid"]} />
+      default:
+        break;
+    }
+    
   } 
+
+  const getObjByValue = (v) => {
+    var res = {};
+    data.forEach((obj, index) => {
+      if (obj["value"] === v) {
+        res = obj;
+      }
+    })
+    return res;
+  }
 
   return (
     <View>
@@ -77,7 +124,7 @@ const ContractorSearch = () => {
         searchPlaceholder={SCREEN_MESSAGE.TIM_KIEM_DOT}
         value={value}
         onChange={item => {
-            setValue(item.value);
+          setValue(item.value);
         }}
         renderLeftIcon={() => (
             <AntDesign style={styles.icon} color="black" name="Safety" size={20} />
