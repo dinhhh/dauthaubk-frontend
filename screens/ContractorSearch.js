@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { StyleSheet, View, Text, TextInput, Button, TouchableOpacity, FlatList } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -24,6 +24,7 @@ const ContractorSearch = () => {
   const [keyword, setKeyword] = useState('');
   const [fetchedData, setFetchedData] = useState([]);
   const [page, setPage] = useState(0);
+  const textRef = useRef();
 
   const renderItem = (item) => {
     return (
@@ -46,7 +47,8 @@ const ContractorSearch = () => {
       const response = await getApi(API_PATH.SEARCH_GOODS_BY_NAME + "/" + keyword);
       setFetchedData(prev => response["data"]);
       return;
-    } else {
+    } 
+    if (keyword != '' && value == '7') {
       const obj = getObjByValue(value);
       if (obj !== undefined) {
         const path = obj["api_path"];
@@ -64,6 +66,7 @@ const ContractorSearch = () => {
     setFetchedData(prev => []);
     const obj = getObjByValue(value);
     console.log(JSON.stringify(obj));
+    textRef.current.clear();
   }
 
   const renderItemFlatList = ({ item }) => {
@@ -140,6 +143,7 @@ const ContractorSearch = () => {
       styles={styles.textInput}
       placeholder={SCREEN_MESSAGE.TU_KHOA}
       onChangeText={(text) => setKeyword(text)} 
+      ref={textRef}
       />
 
       <View style={{flexDirection: "row", justifyContent: 'space-around', marginTop: 15, paddingBottom: 5}}>
