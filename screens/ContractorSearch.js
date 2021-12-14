@@ -18,6 +18,7 @@ const data = [
 ];
 
 const ContractorSearch = () => {
+  
   const [value, setValue] = useState(null);
   const [keyword, setKeyword] = useState('');
   const [fetchedData, setFetchedData] = useState([]);
@@ -38,7 +39,7 @@ const ContractorSearch = () => {
     );
   };
 
-  const searchBtnHanlder = async () => {
+  const searchBtnHandler = async () => {
     console.log("Start search keyword = " + keyword);
     if (keyword != '') {
       const response = await getApi(API_PATH.SEARCH_GOODS_BY_NAME + "/" + keyword);
@@ -46,11 +47,17 @@ const ContractorSearch = () => {
     }
   }
 
+  const resetBtnHandler = () => {
+    setFetchedData(prev => []);
+    setKeyword(prev => '');
+  }
+
   const renderItemFlatList = ({ item }) => {
     return <SearchByGoodResult 
     biddingName={item["Tên gói thầu"]}
     bidSolicitor={item["Bên mời thầu"]}
-    winContractor={item["Nhà thầu trúng thầu"]}/>
+    winContractor={item["Nhà thầu trúng thầu"]}
+    goods={item["Hàng hóa"]} />
   } 
 
   return (
@@ -81,12 +88,20 @@ const ContractorSearch = () => {
       <TextInput
       styles={styles.textInput}
       placeholder={SCREEN_MESSAGE.TU_KHOA}
-      onChangeText={(text) => setKeyword(text)} />
+      onChangeText={(text) => setKeyword(text)} 
+      />
 
       <View style={{flexDirection: "row", justifyContent: 'space-around', marginTop: 15}}>
-        <Button title={SCREEN_MESSAGE.XOA_BO_LOC} color={"#B3C100"} style={styles.button}></Button>
-        <Button title={SCREEN_MESSAGE.NANG_CAO} color={"#34675C"} style={styles.button}></Button>
-        <Button title={SCREEN_MESSAGE.TIM_KIEM} onPress={searchBtnHanlder}></Button>
+        <Button title={SCREEN_MESSAGE.XOA_BO_LOC} 
+        color={"#B3C100"} 
+        style={styles.button} 
+        onPress={resetBtnHandler}></Button>
+        <Button title={SCREEN_MESSAGE.NANG_CAO} 
+        color={"#34675C"} 
+        style={styles.button}></Button>
+        <Button 
+        title={SCREEN_MESSAGE.TIM_KIEM} 
+        onPress={searchBtnHandler}></Button>
       </View>
 
       <FlatList
