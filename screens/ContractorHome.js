@@ -7,6 +7,7 @@ import { API_PATH } from "../config/Api";
 import { getApi } from "../utils/ApiCaller";
 import ContractorBiddingInvitation from "../components/ContractorBiddingInvitationsContainer";
 import ContractorSelectionPlan from "../components/ContractorSelectionPlanContainer";
+import EmptyListMessage from "../components/EmptyListMessage";
 
 const ContractorHome = () => {
 
@@ -104,16 +105,29 @@ const ContractorHome = () => {
   return (
     <View>
       <ContractorButtonView getChildData={getChildData}></ContractorButtonView>
-      <Text style={{ textTransform: 'uppercase'}}>{headerMessage}</Text>
+      <Text style={styles.headerMessage}>{headerMessage}</Text>
       <FlatList
       data={fetchedData}
       renderItem={renderItem}
       keyExtractor={item => item["_id"]["$oid"]}
-      onEndReached={getMoreData} ></FlatList>
+      onEndReached={getMoreData}
+      ListEmptyComponent={EmptyListMessage} ></FlatList>
     </View>
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+
+  headerMessage: {
+    textTransform: 'uppercase', 
+    fontWeight: "bold",
+    backgroundColor: "#B3C100",
+    marginTop: 5,
+    paddingTop: 5,
+    paddingBottom: 5,
+    paddingLeft: 10,
+  }
+
+});
 
 export default ContractorHome;
