@@ -1,0 +1,15 @@
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import React from "react";
+import ContractorSearch from "../screens/ContractorSearch";
+import ContractorDetails from "../screens/ContractorDetails";
+
+const Stack = createNativeStackNavigator();
+
+export default function SearchStack () {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="SearchScreen" component={ContractorSearch}></Stack.Screen>
+      <Stack.Screen name="ContractorDetails" component={ContractorDetails}></Stack.Screen>
+    </Stack.Navigator>
+  );
+}

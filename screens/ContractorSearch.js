@@ -20,7 +20,7 @@ const data = [
   { label: SCREEN_MESSAGE.NHA_THAU, value: '8', api_path: API_PATH.SEARCH_CONTRACTOR_INFO }
 ];
 
-const ContractorSearch = () => {
+const ContractorSearch = ({ navigation }) => {
 
   const [value, setValue] = useState(null);
   const [keyword, setKeyword] = useState('');
@@ -71,6 +71,12 @@ const ContractorSearch = () => {
     textRef.current.clear();
   }
 
+  const getContractorDetailsId = async (objId) => {
+    console.log("getContractorDetailsId in Contractor Search with object id = " + objId);
+    const data = await getApi(API_PATH.GET_CONTRACTOR_BY_OBJ_ID + "/" + objId)
+    navigation.navigate("ContractorDetails", { data: data });
+  }
+
   const renderItemFlatList = ({ item }) => {
     console.log("render flat list with value " + value);
     switch (value) {
@@ -92,7 +98,8 @@ const ContractorSearch = () => {
 
       case '8':
         return <ContractorBriefInfo 
-        data={item} />
+        data={item} 
+        getContractorDetailsId={getContractorDetailsId} />
       default:
         break;
     }

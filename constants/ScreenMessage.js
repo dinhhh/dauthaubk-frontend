@@ -29,4 +29,8 @@ export const SCREEN_MESSAGE = {
     GIA_HANG_HOA: "Giá hàng hóa",
 
     NHA_THAU: "Nhà thầu",
+
+    THONG_TIN_CHUNG: "Thông tin chung",
+
+    GOI_THAU_DA_THAM_GIA: "Gói thầu đã tham gia"
 }
