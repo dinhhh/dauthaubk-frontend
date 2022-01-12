@@ -16,7 +16,7 @@ const SearchByGoodResult = ({ biddingName,
   }
 
   const tableHeader = ["Tên hàng hóa", "Số lượng", "Giá trúng thầu", "Công suất", "Thông số kỹ thuật"];
-  const widthArr = [120, 60, 100, 70, 250];
+  const widthArr = [120, 80, 100, 70, 250];
   const tableData = [];
   goods.forEach(good => {
     const rowData = [];
@@ -90,6 +90,7 @@ const styles = StyleSheet.create({
 
   basicText: {
     textAlign: "justify",
+    marginRight: 10,
   },
 
   publishDate: {
@@ -115,7 +116,9 @@ const styles = StyleSheet.create({
   },
 
   textHeader: {
-    textAlign: "center",
+    textAlign: "justify",
+    marginRight: 5,
+    marginLeft: 5,
   }
 });
 

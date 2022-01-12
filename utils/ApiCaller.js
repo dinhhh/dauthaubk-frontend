@@ -1,5 +1,7 @@
-import { API_URL } from "../config/Api"
+import { API_URL } from "../config/Api";
+import { getToken, AUTH_TOKEN_STORAGE_KEY } from "./AuthToken";
 
+export const AUTH_PREFIX = "Bearer ";
 
 export const getApi = async (path, page = 0, size = 10) => {
   const LOG_TAG = "[GET API Handler] ";
@@ -24,4 +26,20 @@ export const postApi = async (path, requestBody = {}, page = 0, size = 10) => {
   });
   const myJson = await response.json();
   return myJson;
+}
+
+export const postApiWithAuth = async (path, requestBody = {}) => {
+  const authToken = await getToken(AUTH_TOKEN_STORAGE_KEY);
+
+  const url = API_URL + path;
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': AUTH_PREFIX + authToken
+    },
+    body: JSON.stringify(requestBody)
+  });
+
+  return response;
 }

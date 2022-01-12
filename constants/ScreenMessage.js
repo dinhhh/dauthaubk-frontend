@@ -32,5 +32,24 @@ export const SCREEN_MESSAGE = {
 
     THONG_TIN_CHUNG: "Thông tin chung",
 
-    GOI_THAU_DA_THAM_GIA: "Gói thầu đã tham gia"
+    GOI_THAU_DA_THAM_GIA: "Gói thầu đã tham gia",
+
+    HANG_HOA: "Hàng hóa",
+    VAT_LIEU: "Vật liệu",
+    XAY_DUNG: "Xây dựng",
+    HON_HOP: "Hỗn hợp",
+    XAY_LAP: "Xây lắp",
+    TU_VAN: "Tư vấn",
+    PHI_TU_VAN: "Phi tư vấn",
+    LINH_VUC_QUAN_TAM: "Lĩnh vực quan tâm",
+    KHONG_CO_DU_LIEU: "Không có dữ liệu",
+    DIA_PHUONG: "Địa phương quan tâm",
+
+    TRUC_TIEP: "Truc tiep",
+    QUA_MANG: "Qua mang",
+    HINH_THUC_THAM_DU_THAU: "Hình thức tham dự thầu",
+    DANG_NHAP_DE_SU_DUNG_TINH_NANG: "Đăng nhập để sử dụng tính năng này",
+
+    CAC_GOI_THAU_DANG_KY_NHAN_THONG_BAO: "Các gói thầu đăng ký nhận thông báo",
+    THONG_BAO_TRUNG_THAU: "Thông báo trúng thầu",
 }

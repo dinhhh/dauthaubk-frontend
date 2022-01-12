@@ -6,4 +6,10 @@ export const API_PATH = {
     SEARCH_GOODS_BY_NAME: "/search-goods-by-name",
     SEARCH_CONTRACTOR_INFO: "/search-contractor-info",
     GET_CONTRACTOR_BY_OBJ_ID: "/search-contractor-info-by-obj-id",
+
+    USER_REGISTER: "/user/register",
+    USER_LOGIN: "/user/login",
+    USER_SUBSCRIBE: "/user/subscribe",
+
+    GET_SUBS: "/user/get-subs",
 };

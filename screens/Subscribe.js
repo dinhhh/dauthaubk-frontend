@@ -1,26 +1,11 @@
 import React, { useState } from "react";
 import { Button, Text, View, TextInput, StyleSheet, Alert, ScrollView } from "react-native";
 import { FONT_SIZE } from "../constants/Size";
-import RadioForm, {RadioButton, RadioButtonInput, RadioButtonLabel} from 'react-native-simple-radio-button';
-import { postApi } from "../utils/ApiCaller";
-import { API_PATH, API_URL } from "../config/Api";
-import { login } from "./Login";
-import { NavigationContainer } from "@react-navigation/native";
 import DropDownPicker from 'react-native-dropdown-picker'; // https://github.com/hossein-zare/react-native-dropdown-picker
 import { SCREEN_MESSAGE } from "../constants/ScreenMessage";
 import { NAME_CONSTANTS } from "../constants/NameConstants";
-import { postApiWithAuth } from "../utils/ApiCaller";
 
-const Register = ({ navigation }) => {
-  const contractor = "Nhà thầu";
-  const investor = "Nhà đầu tư";
-  const typeData = [{label: contractor, value: contractor}, {label: investor, value: investor}];
-
-  const [userName, setUserName] = useState("");
-  const [password, setPassword] = useState("");
-  const [email, setEmail] = useState("");
-  const [type, setType] = useState(contractor);
-  const [solicitor, setSolicitor] = useState("");
+const Subscribe = ({ navigation }) => {
 
   const [bidCategoryOpen, setBidCategoryOpen] = useState(false);
   const [bidCategoryValue, setBidCategoryValue] = useState([]);
@@ -45,85 +30,8 @@ const Register = ({ navigation }) => {
 
   DropDownPicker.setMode("BADGE");
 
-  const signUp = async () => {
-
-    if ( !(userName && password && email) ) {
-      Alert.alert("Empty field", "Please fill in all required field")
-    } else {
-      const requestBody = {
-        "password": password,
-        "email": email,
-        "type": type,
-        "username": userName
-      }
-
-      const response = await fetch(API_URL + API_PATH.USER_REGISTER,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(requestBody)
-        })
-        .then(async (response) => {
-          
-          if (response.ok) {
-            Alert.alert("Kết quả", "Tạo tài khoản thành công");
-          
-            try {
-              login(email, password);
-              // TODO: redirect to result screen....
-              navigation.navigate("SubscribeListing");
-            } catch {
-              console.log("Login fail...");
-            }
-          
-          } else {
-            Alert.alert("Kết quả", "Email của bạn đã được đăng ký trên hệ thống");
-          }
-
-        });
-
-      console.log(response);
-    }
-  }
-
   return (
     <View style={styles.container}>
-      <TextInput
-        style={styles.input}
-        placeholder='Tài khoản'
-        autoCapitalize="none"
-        placeholderTextColor='black'
-        onChangeText={val => setUserName(val)}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder='Mật khẩu'
-        secureTextEntry={true}
-        autoCapitalize="none"
-        placeholderTextColor='black'
-        onChangeText={val => setPassword(val)}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder='Email'
-        autoCapitalize="none"
-        placeholderTextColor='black'
-        onChangeText={val => setEmail(val)}
-      />
-      <RadioForm 
-        radio_props={typeData}
-        onPress={(value) => setType(value)}
-        formHorizontal={true}
-      />
-      {/* <TextInput
-        style={styles.input}
-        placeholder='Bên mời thầu quan tâm'
-        autoCapitalize="none"
-        placeholderTextColor='black'
-        onChangeText={val => setSolicitor(val)}
-      />
 
       <DropDownPicker
         open={bidCategoryOpen}
@@ -219,10 +127,6 @@ const Register = ({ navigation }) => {
           borderWidth: 0.3,
           paddingLeft: 3,
         }}
-      /> */}
-      <Button
-        title='Đăng ký'
-        onPress={signUp}
       />
     </View>
   )
@@ -251,4 +155,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default Register;
+export default Subscribe;

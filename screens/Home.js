@@ -4,11 +4,6 @@ import { TabView, SceneMap } from "react-native-tab-view";
 import InvestorHome from "./InvestorHome";
 import ContractorHome from "./ContractorHome";
 
-// const renderScene = SceneMap({
-//   first: ContractorHome,
-//   second: InvestorHome
-// });
-
 
 const Home = ({ navigation }) => {
 

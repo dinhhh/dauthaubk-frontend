@@ -44,10 +44,14 @@ const ContractorSearch = ({ navigation }) => {
     );
   };
 
-  const searchBtnHandler = async () => {
+  const searchBtnHandler = async (page = 0) => {
+    console.log("Start search by page " + page);
     if (keyword != '' && value == '1') {
-      const response = await getApi(API_PATH.SEARCH_GOODS_BY_NAME + "/" + keyword);
-      setFetchedData(prev => response["data"]);
+      const response = await getApi(API_PATH.SEARCH_GOODS_BY_NAME + "/" + keyword, page);
+      setFetchedData(prev => {
+        const x = [...prev, ...response["data"]];
+        return x;
+      });
       return;
     } 
     if (keyword != '') {
@@ -57,8 +61,11 @@ const ContractorSearch = ({ navigation }) => {
         const requestBody = {
           "keyword": keyword,
         };
-        const response = await postApi(path, requestBody);
-        setFetchedData(prev => response["data"]);
+        const response = await postApi(path, requestBody, page);
+        setFetchedData(prev => {
+          const x = [...prev, ...response["data"]];
+          return x;
+        });
         return;
       }
     }
@@ -98,13 +105,22 @@ const ContractorSearch = ({ navigation }) => {
 
       case '8':
         return <ContractorBriefInfo 
-        data={item} 
-        getContractorDetailsId={getContractorDetailsId} />
+          data={item} 
+          getContractorDetailsId={getContractorDetailsId} />
       default:
         break;
     }
     
   } 
+
+  const getMoreData = async () => {
+    console.log("Start get more data");
+    setPage(prev => {
+      const x = prev + 1;
+      return x;
+    });
+    await searchBtnHandler(page + 1);
+  }
 
   const getObjByValue = (v) => {
     var res = {};
@@ -176,13 +192,14 @@ const ContractorSearch = ({ navigation }) => {
       data={fetchedData}
       keyExtractor={item => item["_id"]["$oid"]}
       renderItem={renderItemFlatList} 
-      ListEmptyComponent={EmptyListMessage} ></FlatList>
+      ListEmptyComponent={EmptyListMessage}
+      onEndReached={getMoreData} ></FlatList>
 
     </View>
   );
 };
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
 
   dropdown: {
     margin: 16,
