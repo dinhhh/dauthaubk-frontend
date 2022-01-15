@@ -4,7 +4,7 @@ import { Text } from 'react-native';
 const EmptyListMessage = ({ item }) => {
   return (
     <Text
-      onPress={() => getItem( item )}>
+      onPress={() => console.log("Clicked on empty flat list")}>
       No Data Found
     </Text>
   );

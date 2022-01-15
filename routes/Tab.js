@@ -4,7 +4,7 @@ import Home from "../screens/Home";
 import HomeStack from "./HomeStack";
 import Register from "../screens/Register";
 import News from "../screens/News";
-import Settings from "../screens/Settings";
+import SettingsStack from "../routes/SettingsStack";
 import ContractorSearch from "../screens/ContractorSearch";
 import SearchStack from "./SearchStack";
 import SubscribeStack from "./SubscribeStack";
@@ -18,7 +18,7 @@ const Tabs = () => {
       <Tab.Screen name='Searching' component={SearchStack} options={{ headerShown: false }} ></Tab.Screen>
       <Tab.Screen name='SubscribeStack' component={SubscribeStack} ></Tab.Screen>
       <Tab.Screen name='NewsScreen' component={News} ></Tab.Screen>
-      <Tab.Screen name='SettingsScreen' component={Settings} ></Tab.Screen>
+      <Tab.Screen name='SettingsStack' component={SettingsStack} ></Tab.Screen>
     </Tab.Navigator>
   )
 }

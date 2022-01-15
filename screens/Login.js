@@ -3,6 +3,7 @@ import { View, TextInput, Alert, StyleSheet, Button } from "react-native";
 import { API_URL } from "../config/Api";
 import { storeToken, AUTH_TOKEN_STORAGE_KEY, REFRESH_TOKEN_STORAGE_KEY, getToken } from "../utils/AuthToken";
 import { FONT_SIZE } from "../constants/Size";
+import { SCREEN_MESSAGE } from "../constants/ScreenMessage";
 
 const LOGIN_API_PATH = "/user/login";
 
@@ -46,7 +47,7 @@ const Login = ({ navigation }) => {
   const signIn = async () => {
     try {
       await login(email, pw);
-      navigation.navigate("SubscribeListing", { logged: true });
+      Alert.alert(SCREEN_MESSAGE.DANG_NHAP_THANH_CONG)
     } catch (e) {
       console.error(e);
     }
