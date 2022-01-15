@@ -43,3 +43,17 @@ export const postApiWithAuth = async (path, requestBody = {}) => {
 
   return response;
 }
+
+export const postApiWithOutPaging = async (path, requestBody = {}) => {
+  const LOG_TAG = "[POST API Handler] ";
+  const url = API_URL + path;
+  console.log(LOG_TAG + " Start get API at " + url + " with request body = " + JSON.stringify(requestBody));
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(requestBody)
+  });
+  return response;
+}

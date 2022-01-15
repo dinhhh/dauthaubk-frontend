@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { StyleSheet, View, Text, TextInput, Button, TouchableOpacity, FlatList } from 'react-native';
+import { StyleSheet, View, Text, TextInput, Button, TouchableOpacity, FlatList, Alert } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { SCREEN_MESSAGE } from '../constants/ScreenMessage';
@@ -8,12 +8,15 @@ import { API_PATH } from '../config/Api';
 import SearchByGoodResult from '../components/SearchByGoodResult';
 import BriefInfoContainer from '../components/BriefInfoContainer';
 import ContractorBriefInfo from '../components/ContractorBriefInfo';
+import ContractorBiddingInvitation from '../components/ContractorBiddingInvitationsContainer';
+import ContractorSelectionPlan from '../components/ContractorSelectionPlanContainer';
+import { FONT_SIZE } from '../constants/Size';
 
 const data = [
   { label: SCREEN_MESSAGE.GIA_HANG_HOA, value: '1', api_path: API_PATH.SEARCH_GOODS_BY_NAME },
-  // { label: SCREEN_MESSAGE.KE_HOACH_CHON_NHA_THAU, value: '2', api_path: API_PATH.CONTRACTOR_SELECTION_PLANS },
+  { label: SCREEN_MESSAGE.KE_HOACH_CHON_NHA_THAU, value: '2', api_path: API_PATH.CONTRACTOR_SELECTION_PLANS },
   // { label: SCREEN_MESSAGE.THONG_BAO_MOI_SO_TUYEN, value: '3' },
-  // { label: SCREEN_MESSAGE.THONG_BAO_MOI_THAU, value: '4' },
+  { label: SCREEN_MESSAGE.THONG_BAO_MOI_THAU, value: '4', api_path: API_PATH.CONTRACTOR_BIDDING_INVITATIONS },
   // { label: SCREEN_MESSAGE.KET_QUA_SO_TUYEN, value: '5' },
   // { label: SCREEN_MESSAGE.KET_QUA_MO_THAU_DIEN_TU, value: '6' },
   { label: SCREEN_MESSAGE.KET_QUA_LUA_CHON_NHA_THAU, value: '7', api_path: API_PATH.CONTRACTOR_SELECTION_RESULTS },
@@ -27,6 +30,11 @@ const ContractorSearch = ({ navigation }) => {
   const [fetchedData, setFetchedData] = useState([]);
   const [page, setPage] = useState(0);
   const textRef = useRef();
+
+  const [isShowFlatList, setShowFlatList] = useState(true);
+  const [isShowBubbleChart, setShowBubbleChart] = useState(true);
+
+  const bubbleChartView = <Text>Bubble chart view</Text>;
 
   const renderItem = (item) => {
     return (
@@ -93,7 +101,23 @@ const ContractorSearch = ({ navigation }) => {
           bidSolicitor={item["Bên mời thầu"]}
           winContractor={item["Nhà thầu trúng thầu"]}
           goods={item["Hàng hóa"]} />
+
+      case '2':
+        return <ContractorSelectionPlan 
+          biddingName={item["Thông tin chi tiết"]["Tên KHLCNT"]} 
+          bidSolicitor={item["Thông tin chi tiết"]["Bên mời thầu"]}
+          publishDate={item["Ngày đăng tải"]}
+          category={item["Thông tin chi tiết"]["Phân loại"]}
+          cost={item["Giá dự toán"]} />
     
+      case '4':
+        return <ContractorBiddingInvitation 
+          biddingName={item["Thông tin chi tiết"]["Tên gói thầu"]} 
+          bidSolicitor={item["Thông tin chi tiết"]["Bên mời thầu"]}
+          publishDate={item["Ngày đăng tải"]}
+          category={item["Hình thức dự thầu"]}
+          location={item["Địa điểm thực hiện gói thầu"]} />
+
       case '7':
         return <BriefInfoContainer 
           biddingName={item["Thông tin chi tiết"]["Tên gói thầu"]} 
@@ -142,6 +166,22 @@ const ContractorSearch = ({ navigation }) => {
     );
   };
 
+  const navigateToBubbleChart = () => {
+    if (keyword !== '' && value !== null) {
+      switch (value) {
+        case '4':
+          navigation.navigate("BiddingInvitationBubbleChart", { keyword: keyword });
+          break;
+      
+        default:
+          Alert.alert(SCREEN_MESSAGE.CHUA_HO_TRO_XEM_BIEU_DO_VOI_LOAI_THONG_TIN_NAY);
+          break;
+      }
+    } else {
+      Alert.alert(SCREEN_MESSAGE.CHON_LOAI_THONG_TIN_VA_TU_KHOA)
+    }
+  }
+
   return (
     <View>
       <Dropdown
@@ -169,20 +209,21 @@ const ContractorSearch = ({ navigation }) => {
       />
 
       <TextInput
-      styles={styles.textInput}
+      style={styles.textInput}
       placeholder={SCREEN_MESSAGE.TU_KHOA}
       onChangeText={(text) => setKeyword(text)} 
       ref={textRef}
       />
 
-      <View style={{flexDirection: "row", justifyContent: 'space-around', marginTop: 15, paddingBottom: 5}}>
+      <View style={{flexDirection: "row", justifyContent: 'space-around', marginTop: 5, paddingBottom: 5}}>
         <Button title={SCREEN_MESSAGE.XOA_BO_LOC} 
         color={"#B3C100"} 
         style={styles.button} 
         onPress={resetBtnHandler}></Button>
         <Button title={SCREEN_MESSAGE.NANG_CAO} 
         color={"#34675C"} 
-        style={styles.button}></Button>
+        style={styles.button}
+        onPress={navigateToBubbleChart}></Button>
         <Button 
         title={SCREEN_MESSAGE.TIM_KIEM} 
         onPress={searchBtnHandler}></Button>
@@ -254,10 +295,15 @@ export const styles = StyleSheet.create({
   textInput: {
     borderColor: "#777",
     borderWidth: 1,
-    padding: 8,
-    margin: 16,
+    padding: 5,
+    margin: 6,
+    fontSize: FONT_SIZE.NORMAL,
+    borderRadius: 5
   },
   
+  button: {
+    backgroundColor: "red",
+  }
 });
 
 export default ContractorSearch;

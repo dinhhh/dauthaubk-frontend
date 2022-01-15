@@ -12,4 +12,6 @@ export const API_PATH = {
     USER_SUBSCRIBE: "/user/subscribe",
 
     GET_SUBS: "/user/get-subs",
+
+    BUBBLE_CHART_INVITATIONS: "/bubble-chart/bidding-invitation",
 };

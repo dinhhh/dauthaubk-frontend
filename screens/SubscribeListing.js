@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, Button, StyleSheet, FlatList, TouchableOpacity } from "react-native";
+import React, { useState, useEffect, useCallback } from "react";
+import { View, Text, Button, StyleSheet, FlatList, TouchableOpacity, RefreshControl } from "react-native";
 import { isLoggedIn } from "../utils/AuthToken";
 import { SCREEN_MESSAGE } from "../constants/ScreenMessage";
 import { FONT_SIZE } from "../constants/Size";
@@ -10,11 +10,13 @@ import { API_PATH } from "../config/Api";
 import BriefInfoContainer from "../components/BriefInfoContainer";
 import ContractorSelectionPlan from "../components/ContractorSelectionPlanContainer";
 import ContractorBiddingInvitation from "../components/ContractorBiddingInvitationsContainer";
+import AppLoader from "../components/AppLoader";
 
 const SubscribeListing = ({ navigation, route }) => {
 
   const [logged, setLogged] = useState(false);
-  const [temp, setTemp] = useState("");
+  const [isLoading, setLoading] = useState(true);
+  const [isRefreshing, setRefreshing] = useState(false);
 
   useEffect(async () => {
     const logged = await isLoggedIn();
@@ -31,7 +33,7 @@ const SubscribeListing = ({ navigation, route }) => {
   const [biddingInvitations, setBiddingInvitations] = useState([]);
   const [showBiddingInvitations, setShowBiddingInvitations] = useState(true);
 
-  useEffect(async () => {
+  const callApi = async () => {
     const response = await postApiWithAuth(API_PATH.GET_SUBS, {});
     
     if (response.ok) {
@@ -42,8 +44,17 @@ const SubscribeListing = ({ navigation, route }) => {
     } else {
       console.error("Error when fetch data from ", API_PATH.GET_SUBS);
     }
+  }
 
-  }, []);
+  useEffect(async () => {
+    await callApi();
+    setLoading(false);
+  }, [isLoading]);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await callApi();
+  }
 
   const notLoggedView = (
     <View style={{flex: 1, flexDirection: "row"}}>
@@ -101,6 +112,11 @@ const SubscribeListing = ({ navigation, route }) => {
 
   const loggedView = <View>
 
+    <Button 
+      onPress={() => navigation.navigate("Subscribe")}
+      title={SCREEN_MESSAGE.CAI_DAT_THEO_DOI_THONG_TIN}
+    />
+
     <Text style={{textAlign: "center", fontSize: FONT_SIZE.NORMAL}}>{SCREEN_MESSAGE.CAC_GOI_THAU_DANG_KY_NHAN_THONG_BAO}</Text>
     
     <TouchableOpacity onPress={() => setShowBiddingResults(!showBiddingResults)}>
@@ -113,7 +129,13 @@ const SubscribeListing = ({ navigation, route }) => {
         keyExtractor={item => item["Thông tin chi tiết"]["Số TBMT"]}
         ListEmptyComponent={EmptyListMessage}
         style={styles.flatList} // TODO: Hard code here
-      />
+        refreshControl={
+          <RefreshControl 
+            refreshing={isLoading}
+            onRefresh={onRefresh}
+          />
+        }
+        />
     }
 
     <TouchableOpacity onPress={() => setShowBiddingSelectPlan(!showBiddingSelectPlan)}>
@@ -126,6 +148,12 @@ const SubscribeListing = ({ navigation, route }) => {
         keyExtractor={item => item["Thông tin chi tiết"]["Số KHLCNT"]}
         ListEmptyComponent={EmptyListMessage}
         style={styles.flatList}
+        refreshControl={
+          <RefreshControl 
+            refreshing={isLoading}
+            onRefresh={onRefresh}
+          />
+        }
       />
     }
 
@@ -139,12 +167,19 @@ const SubscribeListing = ({ navigation, route }) => {
         keyExtractor={item => item["Thông tin chi tiết"]["Số TBMT"]}
         ListEmptyComponent={EmptyListMessage}
         style={styles.flatList}
+        refreshControl={
+          <RefreshControl 
+            refreshing={isLoading}
+            onRefresh={onRefresh}
+          />
+        }
       />
     }
 
   </View>;
 
   return (
+    isLoading ? <AppLoader /> :
     <View style={styles.container}>
       {/* {logged ? loggedView : notLoggedView} */}
       {loggedView}
