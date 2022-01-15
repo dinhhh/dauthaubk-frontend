@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { StyleSheet, View, Text, TextInput, Button, TouchableOpacity, FlatList, Alert } from 'react-native';
+import { StyleSheet, View, Text, TextInput, Button, RefreshControl, FlatList, Alert } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { SCREEN_MESSAGE } from '../constants/ScreenMessage';
@@ -30,6 +30,7 @@ const ContractorSearch = ({ navigation }) => {
   const [fetchedData, setFetchedData] = useState([]);
   const [page, setPage] = useState(0);
   const textRef = useRef();
+  const [refreshing, setRefreshing] = useState(false)
 
   const [isShowFlatList, setShowFlatList] = useState(true);
   const [isShowBubbleChart, setShowBubbleChart] = useState(true);
@@ -76,7 +77,14 @@ const ContractorSearch = ({ navigation }) => {
         });
         return;
       }
+    } else {
+      Alert.alert(SCREEN_MESSAGE.NHAP_TU_KHOA_DE_TIM_KIEM)
     }
+  }
+
+  const onRefresh = async () => {
+    setFetchedData([]); // remove duplicate item
+    await searchBtnHandler();
   }
 
   const resetBtnHandler = () => {
@@ -234,7 +242,14 @@ const ContractorSearch = ({ navigation }) => {
       keyExtractor={item => item["_id"]["$oid"]}
       renderItem={renderItemFlatList} 
       ListEmptyComponent={EmptyListMessage}
-      onEndReached={getMoreData} ></FlatList>
+      onEndReached={getMoreData} 
+      refreshControl={
+        <RefreshControl 
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+        />
+      }
+      ></FlatList>
 
     </View>
   );

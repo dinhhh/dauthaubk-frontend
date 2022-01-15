@@ -62,4 +62,5 @@ export const SCREEN_MESSAGE = {
     DANG_KY_KHONG_THANH_CONG: "Dang ky khong thanh cong. Vui long thu lai sau",
 
     DANG_NHAP_THANH_CONG: "Dang nhap thanh cong",
+    NHAP_TU_KHOA_DE_TIM_KIEM: "Nhap tu khoa de tim kiem",
 }
