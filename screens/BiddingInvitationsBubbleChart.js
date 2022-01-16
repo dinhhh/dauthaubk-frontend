@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 import { View, StyleSheet, ScrollView, TouchableOpacity, Text, Button } from "react-native"
 import { VictoryScatter, VictoryChart, VictoryTheme } from "victory-native";
 import { generateColor } from "../utils/Random";
-import { Table, Row, Rows, TableWrapper } from "react-native-table-component";
+import { Table, Row, Rows, TableWrapper, Cell } from "react-native-table-component";
 import { FONT_SIZE } from "../constants/Size";
 import { postApiWithOutPaging } from "../utils/ApiCaller";
 import { API_PATH } from "../config/Api";
 import AppLoader from "../components/AppLoader";
 import { BaseStyles } from "../constants/BaseStyles";
+import { SORT_ORDER } from "../constants/NameConstants";
 
 const TableView = ({ tableData, setFetched, widthArr }) => {
   
@@ -47,15 +48,84 @@ const ChartView = ({ data, setFetched }) => {
   />);
 }
 
+const BUTTON = {
+  DIA_PHUONG: 'Địa phương',
+  SO_LUONG_GOI_THAU: 'Số lượng gói thầu',
+  TONG_GIA_TRI: 'Tổng giá trị gói thầu'
+}
+
+const CLICK_COUNTER = {
+  'Địa phương': 0,
+  'Số lượng gói thầu': 0,
+  'Tổng giá trị gói thầu': 0,
+}
+
+const reverseStringToNumber = ( s ) => {
+  return parseInt(s.replace(/,/g, "").replace(/₫/g, ""));
+}
+
 const BiddingInvitationBubbleChart = ({ route }) => {
   
   console.log("Route param keyword ", route?.params?.keyword);
 
   const [data, setData] = useState([]);
-  const tableHeader = ["Địa phương", "Số lượng gói thầu", "Tổng giá trị gói thầu"];
-  const widthArr = [120, 120, 150];
+  const widthArr = [150, 120, 150];
   const [tableData, setTableData] = useState([]);
   const [fetched, setFetched] = useState(false);
+  const [sortOrderArr, setOrderArr] = useState([SORT_ORDER.ASC, SORT_ORDER.ASC, SORT_ORDER.ASC]);
+
+  const customSort = ( value, index ) => {
+    console.log("Clicked on button has value ", value);
+    const temp = tableData;
+
+    switch (value) {
+      case BUTTON.DIA_PHUONG:
+        temp.sort((a, b) => {
+                              var nameA = a[0].toUpperCase();
+                              var nameB = b[0].toUpperCase();
+                              if (nameA < nameB) {
+                                return -1;
+                              }
+                              if (nameA > nameB) {
+                                return 1;
+                              }
+                              return 0;
+                            });
+        break;
+      
+      case BUTTON.SO_LUONG_GOI_THAU:
+        temp.sort((a, b) => a[1] - b[1]);
+        break;
+
+      case BUTTON.TONG_GIA_TRI:
+        temp.sort((a, b) => reverseStringToNumber(a[2]) - reverseStringToNumber(b[2]));
+        break;
+
+      default:
+        break;
+    }
+
+    const newSortOrder = [...sortOrderArr];
+    if (sortOrderArr[index] == SORT_ORDER.ASC) {
+      newSortOrder[index] = SORT_ORDER.DESC;
+    } else {
+      temp.reverse();
+      newSortOrder[index] = SORT_ORDER.ASC;
+    }
+
+    setOrderArr([...newSortOrder]);
+    setTableData([...temp]);
+  }
+
+  const elementButton = ( value, index ) => (
+    <TouchableOpacity onPress={ () => customSort(value, index) }>
+      <View style={styles.btn}>
+        <Text style={styles.btnText}>{value}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+
+  const tableHeader = [elementButton(BUTTON.DIA_PHUONG, 0), elementButton(BUTTON.SO_LUONG_GOI_THAU, 1), elementButton(BUTTON.TONG_GIA_TRI, 2)];
 
   useEffect(async () => {
     if ( true ) {
@@ -91,24 +161,24 @@ const BiddingInvitationBubbleChart = ({ route }) => {
   
   return (
     fetched ? 
-    <View>
-      
-      <ChartView data={data} setFetched={setFetched} />
+    <ScrollView>
+      <View>
+        
+        <ChartView data={data} setFetched={setFetched} />
 
-        <View style={styles.container}>
-          <ScrollView horizontal={true}>
-            <View>
-              <Table>
-                <Row data={tableHeader} widthArr={widthArr} style={styles.header} textStyle={styles.textHeader}></Row>
-              </Table>
-            
-              <ScrollView >
+          <View style={styles.container}>
+            <ScrollView horizontal={true}>
+              <View>
+                <Table>
+                  <Row data={tableHeader} widthArr={widthArr} style={styles.header} textStyle={styles.textHeader}></Row>
+                </Table>
+              
                 <TableView tableData={tableData} setFetched={setFetched} widthArr={widthArr} />
-              </ScrollView>
-            </View>
-          </ScrollView>
-        </View>
-    </View> 
+              </View>
+            </ScrollView>
+          </View>
+      </View> 
+    </ScrollView>
     : <AppLoader />
   );
 }
@@ -116,9 +186,9 @@ const BiddingInvitationBubbleChart = ({ route }) => {
 const styles = StyleSheet.create({
   
   container: {
-    marginTop: 5,
-    marginLeft: 10,
-    marginRight: 10,
+    // marginTop: 5,
+    // marginLeft: 10,
+    // marginRight: 10,
   },
 
   biddingName: {
@@ -129,7 +199,8 @@ const styles = StyleSheet.create({
 
   basicText: {
     textAlign: "justify",
-    marginRight: 10,
+    marginRight: 5,
+    marginLeft: 5
   },
 
   publishDate: {
@@ -146,7 +217,7 @@ const styles = StyleSheet.create({
   },
 
   header: { 
-    height: 50,
+    height: 30,
     backgroundColor: "#bfbfbb",
   },
 

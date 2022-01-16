@@ -10,3 +10,8 @@ export const NAME_CONSTANTS = {
   "Kiên Giang", "Long An", "Sóc Trăng", "Tiền Giang", "Trà Vinh", "Vĩnh Long", "Cần Thơ"]
   
 }
+
+export const SORT_ORDER = {
+  ASC: "ASC",
+  DESC: "DESC"
+}
