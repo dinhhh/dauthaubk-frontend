@@ -52,6 +52,7 @@ const ContractorSearch = ({ navigation }) => {
 
   const searchBtnHandler = async (page = 0) => {
     console.log("Start search by page " + page);
+    setFetchedData(prev => []);
     if (keyword != '' && value == '1') {
       setLoading(true);
       const response = await getApi(API_PATH.SEARCH_GOODS_BY_NAME + "/" + keyword, page);

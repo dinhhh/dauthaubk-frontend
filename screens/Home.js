@@ -4,7 +4,6 @@ import { TabView, SceneMap } from "react-native-tab-view";
 import InvestorHome from "./InvestorHome";
 import ContractorHome from "./ContractorHome";
 
-
 const Home = ({ navigation }) => {
 
   const LOG_TAG = "[Home screen] ";
@@ -49,7 +48,7 @@ const Home = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: Platform.OS === 'ios' ? 0 : 30, // TODO: hard code here
+    marginTop: Platform.OS === 'ios' ? 20 : 30, // TODO: hard code here
   }
 });
 

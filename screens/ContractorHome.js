@@ -1,5 +1,5 @@
 import * as React from "react";
-import { View, Text, StyleSheet, FlatList } from "react-native";
+import { View, Text, StyleSheet, FlatList, RefreshControl } from "react-native";
 import ContractorButtonView from "../components/ContractorButtonView";
 import { SCREEN_MESSAGE } from "../constants/ScreenMessage";
 import BriefInfoContainer from "../components/BriefInfoContainer";
@@ -8,6 +8,7 @@ import { getApi } from "../utils/ApiCaller";
 import ContractorBiddingInvitation from "../components/ContractorBiddingInvitationsContainer";
 import ContractorSelectionPlan from "../components/ContractorSelectionPlanContainer";
 import EmptyListMessage from "../components/EmptyListMessage";
+import AppLoader from "../components/AppLoader";
 
 const ContractorHome = ({ navigate, destination }) => {
 
@@ -17,6 +18,8 @@ const ContractorHome = ({ navigate, destination }) => {
   const [fetchedData, setFetchedData] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [headerMessage, setHeaderMessage] = React.useState(SCREEN_MESSAGE.KET_QUA_TRUNG_THAU);
+  const [loading, setLoading] = React.useState(false);
+  const [refreshing, setRefreshing] = React.useState(false);
 
   const getChildData = async (childData) => {
     if (childData != data) {
@@ -30,6 +33,7 @@ const ContractorHome = ({ navigate, destination }) => {
   }
 
   const getData = async (index, page) => {
+    setLoading(true);
     var path = '';
     switch (index) {
       case 3:
@@ -50,6 +54,7 @@ const ContractorHome = ({ navigate, destination }) => {
 
     let tempData = await getApi(path, page);
     setData(index); 
+    setLoading(false);
     setFetchedData(prev => {
       const x = [...prev, ...tempData["data"]];
       return x;
@@ -63,6 +68,12 @@ const ContractorHome = ({ navigate, destination }) => {
   const getMoreData = async () => {
     setPage(page + 1);
     getData(data, page + 1);
+  }
+
+  const onRefresh = async () => {
+    setPage(0);
+    setFetchedData(prev => []);
+    getData(data, 0);
   }
 
   const renderItem = ({ item }) => {
@@ -110,6 +121,7 @@ const ContractorHome = ({ navigate, destination }) => {
 
   return (
     <View>
+      {loading ? <AppLoader /> : <View></View>}
       <ContractorButtonView getChildData={getChildData}></ContractorButtonView>
       <Text style={styles.headerMessage}>{headerMessage}</Text>
       <FlatList
@@ -117,7 +129,13 @@ const ContractorHome = ({ navigate, destination }) => {
       renderItem={renderItem}
       keyExtractor={item => item["_id"]["$oid"]}
       onEndReached={getMoreData}
-      ListEmptyComponent={EmptyListMessage} ></FlatList>
+      ListEmptyComponent={EmptyListMessage}
+      refreshControl={
+        <RefreshControl 
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+        />
+      } ></FlatList>
     </View>
   );
 }

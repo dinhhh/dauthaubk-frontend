@@ -45,8 +45,8 @@ export const SCREEN_MESSAGE = {
     KHONG_CO_DU_LIEU: "Không có dữ liệu",
     DIA_PHUONG: "Địa phương quan tâm",
 
-    TRUC_TIEP: "Truc tiep",
-    QUA_MANG: "Qua mang",
+    TRUC_TIEP: "Trực tiếp",
+    QUA_MANG: "Qua mạng",
     HINH_THUC_THAM_DU_THAU: "Hình thức tham dự thầu",
     DANG_NHAP_DE_SU_DUNG_TINH_NANG: "Đăng nhập để sử dụng tính năng này",
 
