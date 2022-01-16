@@ -7,6 +7,45 @@ import { FONT_SIZE } from "../constants/Size";
 import { postApiWithOutPaging } from "../utils/ApiCaller";
 import { API_PATH } from "../config/Api";
 import AppLoader from "../components/AppLoader";
+import { BaseStyles } from "../constants/BaseStyles";
+
+const TableView = ({ tableData, setFetched, widthArr }) => {
+  
+  if (tableData === null || tableData === undefined || tableData.length === 0) {
+    setFetched(false);
+    return <View></View>
+  }
+
+  return (<Table>
+    {
+      tableData.map((rowData, index) => (
+        <Row 
+          key={index}
+          data={rowData}
+          widthArr={widthArr}
+          textStyle={styles.basicText}
+          style={[styles.row, index % 2 && {backgroundColor: '#E7E6E1'}]}/>
+      ))
+    }
+  </Table>);
+}
+
+const ChartView = ({ data, setFetched }) => {
+  if (data === null || data === undefined || data.length === 0) {
+    setFetched(false);
+    console.log("Data in chart view is empty....");
+    return <View></View>
+  }
+
+  return (<VictoryScatter
+    style={{ data: { fill: ({ datum }) => generateColor() } }}
+    bubbleProperty="y"
+    maxBubbleSize={25}
+    minBubbleSize={5}
+    data={data?.data}
+    labels={ ({ datum }) => `${datum.province}` }
+  />);
+}
 
 const BiddingInvitationBubbleChart = ({ route }) => {
   
@@ -19,7 +58,7 @@ const BiddingInvitationBubbleChart = ({ route }) => {
   const [fetched, setFetched] = useState(false);
 
   useEffect(async () => {
-    if ( !fetched ) {
+    if ( true ) {
       const requestBody = {
         "keyword": route?.params?.keyword
       }
@@ -48,20 +87,13 @@ const BiddingInvitationBubbleChart = ({ route }) => {
         setFetched(true);
       }
     }
-  }, [fetched]);
+  }, []);
   
   return (
     fetched ? 
     <View>
-      <VictoryScatter
-        // style={{ data: { fill: "#c43a31" } }}
-        style={{ data: { fill: ({ datum }) => generateColor() } }}
-        bubbleProperty="y"
-        maxBubbleSize={25}
-        minBubbleSize={5}
-        data={data.data}
-        labels={ ({ datum }) => `${datum.province}` }
-      />
+      
+      <ChartView data={data} setFetched={setFetched} />
 
         <View style={styles.container}>
           <ScrollView horizontal={true}>
@@ -71,18 +103,7 @@ const BiddingInvitationBubbleChart = ({ route }) => {
               </Table>
             
               <ScrollView >
-                <Table>
-                  {
-                    tableData.map((rowData, index) => (
-                      <Row 
-                        key={index}
-                        data={rowData}
-                        widthArr={widthArr}
-                        textStyle={styles.basicText}
-                        style={[styles.row, index % 2 && {backgroundColor: '#E7E6E1'}]}/>
-                    ))
-                  }
-                </Table>
+                <TableView tableData={tableData} setFetched={setFetched} widthArr={widthArr} />
               </ScrollView>
             </View>
           </ScrollView>
