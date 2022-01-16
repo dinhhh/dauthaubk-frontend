@@ -53,15 +53,15 @@ export const SCREEN_MESSAGE = {
     CAC_GOI_THAU_DANG_KY_NHAN_THONG_BAO: "Các gói thầu đăng ký nhận thông báo",
     THONG_BAO_TRUNG_THAU: "Thông báo trúng thầu",
 
-    CHON_LOAI_THONG_TIN_VA_TU_KHOA: "Chon loai thong tin va tu khoa",
-    CHUA_HO_TRO_XEM_BIEU_DO_VOI_LOAI_THONG_TIN_NAY: "Chua ho tro...",
-    CAI_DAT_THEO_DOI_THONG_TIN: "Cai dat",
-    LUU_CAI_DAT: "Luu cai dat",
+    CHON_LOAI_THONG_TIN_VA_TU_KHOA: "Vui lòng chọn thông tin và từ khóa",
+    CHUA_HO_TRO_XEM_BIEU_DO_VOI_LOAI_THONG_TIN_NAY: "Tính năng chưa hỗ trợ",
+    CAI_DAT_THEO_DOI_THONG_TIN: "Cài đặt thông tin theo dõi",
+    LUU_CAI_DAT: "Lưu cài đặt",
 
-    DANG_KY_THANH_CONG: "Dang ky thanh cong",
-    DANG_KY_KHONG_THANH_CONG: "Dang ky khong thanh cong. Vui long thu lai sau",
+    DANG_KY_THANH_CONG: "Đăng ký thành công",
+    DANG_KY_KHONG_THANH_CONG: "Đăng ký không thành công. Vui lòng thử lại sau",
 
-    DANG_NHAP_THANH_CONG: "Dang nhap thanh cong",
-    NHAP_TU_KHOA_DE_TIM_KIEM: "Nhap tu khoa de tim kiem",
-    KE_HOACH_LCNT: "Ke hoach LCNT",
+    DANG_NHAP_THANH_CONG: "Đăng nhập thành công",
+    NHAP_TU_KHOA_DE_TIM_KIEM: "Vui lòng nhập từ khóa để tìm kiếm",
+    KE_HOACH_LCNT: "Kế hoạch LCNT",
 }

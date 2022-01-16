@@ -1,6 +1,6 @@
 export const CATEGORY_NAME = {
-  TRUC_TIEP: "Truc tiep",
-  TU_VAN: "Tu van",
-  QUA_MANG: "Qua mang",
-  HANG_HOA: "Hang hoa"
+  TRUC_TIEP: "Trực tiếp",
+  TU_VAN: "Tư vấn",
+  QUA_MANG: "Qua mạng",
+  HANG_HOA: "Hàng hóa"
 };

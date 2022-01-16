@@ -32,11 +32,6 @@ const ContractorSearch = ({ navigation }) => {
   const textRef = useRef();
   const [refreshing, setRefreshing] = useState(false)
 
-  const [isShowFlatList, setShowFlatList] = useState(true);
-  const [isShowBubbleChart, setShowBubbleChart] = useState(true);
-
-  const bubbleChartView = <Text>Bubble chart view</Text>;
-
   const renderItem = (item) => {
     return (
     <View style={styles.item}>
@@ -116,7 +111,9 @@ const ContractorSearch = ({ navigation }) => {
           bidSolicitor={item["Thông tin chi tiết"]["Bên mời thầu"]}
           publishDate={item["Ngày đăng tải"]}
           category={item["Thông tin chi tiết"]["Phân loại"]}
-          cost={item["Giá dự toán"]} />
+          cost={item["Giá dự toán"]}
+          navigate={navigation.navigate}
+          destination={"BiddingDetails"} />
     
       case '4':
         return <ContractorBiddingInvitation 
@@ -124,7 +121,9 @@ const ContractorSearch = ({ navigation }) => {
           bidSolicitor={item["Thông tin chi tiết"]["Bên mời thầu"]}
           publishDate={item["Ngày đăng tải"]}
           category={item["Hình thức dự thầu"]}
-          location={item["Địa điểm thực hiện gói thầu"]} />
+          location={item["Địa điểm thực hiện gói thầu"]}
+          navigate={navigation.navigate}
+          destination={"BiddingDetails"} />
 
       case '7':
         return <BriefInfoContainer 
@@ -133,7 +132,9 @@ const ContractorSearch = ({ navigation }) => {
           publishDate={item["Ngày đăng tải"]}
           contractorWin={item["Kết quả"]["Nhà thầu trúng thầu"]}
           winCost={item["Kết quả"]["Giá trúng thầu"]}
-          biddingId={item["_id"]["$oid"]} />
+          biddingId={item["_id"]["$oid"]}
+          navigate={navigation.navigate}
+          destination={"BiddingDetails"} />
 
       case '8':
         return <ContractorBriefInfo 
