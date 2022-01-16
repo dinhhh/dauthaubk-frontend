@@ -11,8 +11,8 @@ const Home = ({ navigation }) => {
   const layout = useWindowDimensions();
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
-    {key: "first", title: "NHA THAU"},
-    {key: "second", title: "NHA DAU TU"},
+    {key: "first", title: "NHÀ THẦU"},
+    {key: "second", title: "NHÀ ĐẦU TƯ"},
   ]);
 
   const pressHandler = (objId) => {
@@ -23,7 +23,11 @@ const Home = ({ navigation }) => {
   const renderScene = ({ route }) => {
     switch (route.key) {
       case 'first':
-        return <ContractorHome getObjId={pressHandler}/>
+        return <ContractorHome 
+          // getObjId={pressHandler}
+          navigate={navigation.navigate}
+          destination={"BiddingDetails"}
+        />
   
       case 'second':
         return <InvestorHome />

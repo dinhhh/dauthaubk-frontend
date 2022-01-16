@@ -6,12 +6,13 @@ const ContractorSelectionPlan = ({ biddingName,
   bidSolicitor,
   publishDate,
   category,
-  cost }) => {
+  cost,
+  navigate, 
+  destination }) => {
   const LOG_TAG = "[ContractorSelectionPlan] ";
 
   const clickOpacityHandler = () => {
-    console.log(LOG_TAG + "User click bidding id = " + biddingId);
-    getBiddingId(biddingId);
+    navigate(destination, {bidName: biddingName, solicitor: bidSolicitor, isPlan: true, defaultVisibleIndex: 0})
   }
 
   return (

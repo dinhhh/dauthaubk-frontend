@@ -14,4 +14,5 @@ export const API_PATH = {
     GET_SUBS: "/user/get-subs",
 
     BUBBLE_CHART_INVITATIONS: "/bubble-chart/bidding-invitation",
+    SEARCH_BID_BY_NAME: "/search-bid-by-name",
 };

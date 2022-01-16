@@ -9,7 +9,7 @@ import ContractorBiddingInvitation from "../components/ContractorBiddingInvitati
 import ContractorSelectionPlan from "../components/ContractorSelectionPlanContainer";
 import EmptyListMessage from "../components/EmptyListMessage";
 
-const ContractorHome = () => {
+const ContractorHome = ({ navigate, destination }) => {
 
   const LOG_TAG = "[ContractorHome] ";
 
@@ -76,7 +76,9 @@ const ContractorHome = () => {
           contractorWin={item["Kết quả"]["Nhà thầu trúng thầu"]}
           winCost={item["Kết quả"]["Giá trúng thầu"]}
           biddingId={item["_id"]["$oid"]}
-          getBiddingId={getBiddingId} />
+          getBiddingId={getBiddingId} 
+          navigate={navigate}
+          destination={destination} />
         
         case 2:
           return <ContractorBiddingInvitation 
@@ -84,7 +86,9 @@ const ContractorHome = () => {
           bidSolicitor={item["Thông tin chi tiết"]["Bên mời thầu"]}
           publishDate={item["Ngày đăng tải"]}
           category={item["Hình thức dự thầu"]}
-          location={item["Địa điểm thực hiện gói thầu"]} />
+          location={item["Địa điểm thực hiện gói thầu"]}
+          navigate={navigate}
+          destination={destination} />
 
         case 0:
           return <ContractorSelectionPlan 
@@ -92,7 +96,9 @@ const ContractorHome = () => {
           bidSolicitor={item["Thông tin chi tiết"]["Bên mời thầu"]}
           publishDate={item["Ngày đăng tải"]}
           category={item["Thông tin chi tiết"]["Phân loại"]}
-          cost={item["Giá dự toán"]} />
+          cost={item["Giá dự toán"]} 
+          navigate={navigate}
+          destination={destination} />
         default:
           break;
       }
