@@ -11,6 +11,7 @@ import ContractorBriefInfo from '../components/ContractorBriefInfo';
 import ContractorBiddingInvitation from '../components/ContractorBiddingInvitationsContainer';
 import ContractorSelectionPlan from '../components/ContractorSelectionPlanContainer';
 import { FONT_SIZE } from '../constants/Size';
+import AppLoader from '../components/AppLoader';
 
 const data = [
   { label: SCREEN_MESSAGE.GIA_HANG_HOA, value: '1', api_path: API_PATH.SEARCH_GOODS_BY_NAME },
@@ -30,7 +31,8 @@ const ContractorSearch = ({ navigation }) => {
   const [fetchedData, setFetchedData] = useState([]);
   const [page, setPage] = useState(0);
   const textRef = useRef();
-  const [refreshing, setRefreshing] = useState(false)
+  const [refreshing, setRefreshing] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const renderItem = (item) => {
     return (
@@ -51,16 +53,20 @@ const ContractorSearch = ({ navigation }) => {
   const searchBtnHandler = async (page = 0) => {
     console.log("Start search by page " + page);
     if (keyword != '' && value == '1') {
+      setLoading(true);
       const response = await getApi(API_PATH.SEARCH_GOODS_BY_NAME + "/" + keyword, page);
       setFetchedData(prev => {
         const x = [...prev, ...response["data"]];
+        setLoading(false);
         return x;
       });
+      setLoading(false);
       return;
     } 
     if (keyword != '') {
       const obj = getObjByValue(value);
       if (obj !== undefined) {
+        setLoading(true);
         const path = obj["api_path"];
         const requestBody = {
           "keyword": keyword,
@@ -68,8 +74,10 @@ const ContractorSearch = ({ navigation }) => {
         const response = await postApi(path, requestBody, page);
         setFetchedData(prev => {
           const x = [...prev, ...response["data"]];
+          setLoading(false);
           return x;
         });
+        setLoading(false);
         return;
       }
     } else {
@@ -192,7 +200,9 @@ const ContractorSearch = ({ navigation }) => {
   }
 
   return (
+    
     <View>
+      {loading ? <AppLoader /> : <View></View>}
       <Dropdown
         style={styles.dropdown}
         placeholderStyle={styles.placeholderStyle}
