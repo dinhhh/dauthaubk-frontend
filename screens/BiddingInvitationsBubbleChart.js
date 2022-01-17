@@ -1,21 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, ScrollView, TouchableOpacity, Text, Button } from "react-native"
-import { VictoryScatter, VictoryChart, VictoryTheme } from "victory-native";
+import { View, StyleSheet, ScrollView, TouchableOpacity, Text, Modal } from "react-native"
+import { VictoryScatter, VictoryChart, VictoryContainer } from "victory-native";
 import { generateColor } from "../utils/Random";
-import { Table, Row, Rows, TableWrapper, Cell } from "react-native-table-component";
+import { Table, Row } from "react-native-table-component";
 import { FONT_SIZE } from "../constants/Size";
 import { postApiWithOutPaging } from "../utils/ApiCaller";
 import { API_PATH } from "../config/Api";
 import AppLoader from "../components/AppLoader";
-import { BaseStyles } from "../constants/BaseStyles";
 import { SORT_ORDER } from "../constants/NameConstants";
 import NoData from "../components/NoData";
 import { convertCostToString } from "../utils/CurrencyFormat";
+import { MaterialIcons } from '@expo/vector-icons';
 
 const TableView = ({ tableData, setFetched, widthArr }) => {
   
   if (tableData === null || tableData === undefined || tableData.length === 0) {
-    setFetched(false);
     return <View></View>
   }
 
@@ -33,7 +32,7 @@ const TableView = ({ tableData, setFetched, widthArr }) => {
   </Table>);
 }
 
-const ChartView = ({ data, setFetched, bubbleProperty }) => {
+const ChartView = ({ data, setFetched, bubbleProperty, setModalVisible, setModelData, setProvinceModal }) => {
   if (data === null || data === undefined || data.length === 0) {
     setFetched(false);
     console.log("Data in chart view is empty....");
@@ -52,14 +51,106 @@ const ChartView = ({ data, setFetched, bubbleProperty }) => {
     return `${datum.province}`
   }
 
-  return (<VictoryScatter
+  return (<VictoryChart containerComponent={<VictoryContainer disableContainerEvents />}>
+  <VictoryScatter
     style={{ data: { fill: ({ datum }) => generateColor() } }}
     bubbleProperty={bubbleProperty}
     maxBubbleSize={25}
     minBubbleSize={5}
     data={data?.data}
     labels={ ({ datum }) => getLabel({ datum }) }
-  />);
+    events={[
+      {
+        target: "data",
+        eventHandlers: {
+          onPressIn: () => {
+            return [
+              {
+                target: "data",
+                mutation: ( props ) => {
+                  const provinceObj = getProvinceObjByName(props.data, props.datum?.province);
+                  setModelData(provinceObj["details"]);
+                  setModalVisible(true);
+                  setProvinceModal(provinceObj["province"]);
+                }
+              }
+            ];
+          }
+        }
+      }
+    ]}
+  />
+  </VictoryChart>
+  );
+}
+
+const ModalView = ({ provinceModal, modalData, modalVisible, setModalVisible }) => {
+  console.log("Modal data ", modalData);
+  const tableHeader = ["Tên gói thầu", "Giá gói thầu"];
+  const widthArr = [200, 120];
+  const tableData = [];
+
+  let totalCost = 0;
+  if (Array.isArray(modalData)) {
+    modalData.forEach(e => {
+      const rowData = [];
+      rowData.push(e["Tên gói thầu"]);
+      rowData.push(convertCostToString(e["Giá gói thầu"]));
+      totalCost += e["Giá gói thầu"];
+      
+      tableData.push(rowData);
+    });
+  }
+
+  tableData.push(["TỔNG", convertCostToString(totalCost)]);
+
+  return (<View>
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={modalVisible}
+      onRequestClose={() => {
+        setModalVisible(!modalVisible);
+      }}
+      >
+        <View style={styles.modalBackground}>
+          <View style={styles.modalContainer}>
+            
+            <View style={styles.closeModalBtn}>
+              <TouchableOpacity style={{alignSelf: "flex-end"}} onPress={ () => setModalVisible(!modalVisible) }>
+                <MaterialIcons name="close" size={30} color="black" />
+              </TouchableOpacity>
+              <Text style={{alignSelf: "flex-start"}} >{provinceModal}</Text>
+            </View>
+
+            <View style={styles.container}>
+              <ScrollView>
+                <TouchableOpacity>
+                <View>
+                  <Table>
+                    <Row data={tableHeader} widthArr={widthArr} style={styles.header} textStyle={styles.textHeader}></Row>
+                  </Table>
+                
+                  <TableView tableData={tableData} widthArr={widthArr} />
+                </View>
+                </TouchableOpacity>
+              </ScrollView>
+            </View>
+            
+          </View>
+        </View>
+      </Modal>
+  </View>);
+}
+
+const getProvinceObjByName = (arr, name) => {
+  if (Array.isArray(arr)) {
+    var res = arr.find(obj => obj.province.localeCompare(name) == 0);
+    return res;
+  }
+
+  console.log("Not found ", name, "in", arr);
+  return null;
 }
 
 const BUTTON = {
@@ -83,6 +174,9 @@ const BiddingInvitationBubbleChart = ({ route }) => {
   const [sortOrderArr, setOrderArr] = useState([SORT_ORDER.ASC, SORT_ORDER.ASC, SORT_ORDER.ASC]);
   const [isEmptyData, setEmpty] = useState(false);
   const [bubbleProperty, setBubbleProperty] = useState("x");
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalData, setModelData] = useState([]);
+  const [provinceModal, setProvinceModal] = useState("");
 
   const customSort = ( value, index ) => {
     console.log("Clicked on button has value ", value);
@@ -176,7 +270,13 @@ const BiddingInvitationBubbleChart = ({ route }) => {
     fetched ? 
     <ScrollView>
       <View>
-        <ChartView data={data} setFetched={setFetched} bubbleProperty={bubbleProperty} />
+        <View style={styles.centeredView}>
+          <ModalView provinceModal={provinceModal} modalData={modalData} modalVisible={modalVisible} setModalVisible={setModalVisible} />
+        </View>
+
+        <ScrollView horizontal={true} >
+          <ChartView data={data} setFetched={setFetched} bubbleProperty={bubbleProperty} setModalVisible={setModalVisible} setModelData={setModelData} setProvinceModal={setProvinceModal} />
+        </ScrollView>
         <View style={styles.container}>
           <ScrollView horizontal={true}>
             <View>
@@ -197,7 +297,7 @@ const BiddingInvitationBubbleChart = ({ route }) => {
 const styles = StyleSheet.create({
   
   container: {
-    // marginTop: 5,
+    marginTop: 10,
     // marginLeft: 10,
     // marginRight: 10,
   },
@@ -240,6 +340,35 @@ const styles = StyleSheet.create({
     textAlign: "justify",
     marginRight: 5,
     marginLeft: 5,
+  },
+
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22
+  },
+
+  modalBackground: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  modalContainer: {
+    backgroundColor: "white",
+    paddingHorizontal: 20,
+    paddingBottom: 30,
+    paddingTop: 10,
+    borderRadius: 15,
+    height: 400,
+  },
+
+  closeModalBtn: {
+    // alignItems: "flex-end",
+    height: 23,
+    justifyContent: "center",
   }
 });
 
