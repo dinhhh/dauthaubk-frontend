@@ -54,12 +54,6 @@ const BUTTON = {
   TONG_GIA_TRI: 'Tổng giá trị gói thầu'
 }
 
-const CLICK_COUNTER = {
-  'Địa phương': 0,
-  'Số lượng gói thầu': 0,
-  'Tổng giá trị gói thầu': 0,
-}
-
 const reverseStringToNumber = ( s ) => {
   return parseInt(s.replace(/,/g, "").replace(/₫/g, ""));
 }
@@ -73,6 +67,7 @@ const BiddingInvitationBubbleChart = ({ route }) => {
   const [tableData, setTableData] = useState([]);
   const [fetched, setFetched] = useState(false);
   const [sortOrderArr, setOrderArr] = useState([SORT_ORDER.ASC, SORT_ORDER.ASC, SORT_ORDER.ASC]);
+  const [isEmptyData, setEmpty] = useState(false);
 
   const customSort = ( value, index ) => {
     console.log("Clicked on button has value ", value);
@@ -163,20 +158,18 @@ const BiddingInvitationBubbleChart = ({ route }) => {
     fetched ? 
     <ScrollView>
       <View>
-        
         <ChartView data={data} setFetched={setFetched} />
-
-          <View style={styles.container}>
-            <ScrollView horizontal={true}>
-              <View>
-                <Table>
-                  <Row data={tableHeader} widthArr={widthArr} style={styles.header} textStyle={styles.textHeader}></Row>
-                </Table>
-              
-                <TableView tableData={tableData} setFetched={setFetched} widthArr={widthArr} />
-              </View>
-            </ScrollView>
-          </View>
+        <View style={styles.container}>
+          <ScrollView horizontal={true}>
+            <View>
+              <Table>
+                <Row data={tableHeader} widthArr={widthArr} style={styles.header} textStyle={styles.textHeader}></Row>
+              </Table>
+            
+              <TableView tableData={tableData} setFetched={setFetched} widthArr={widthArr} />
+            </View>
+          </ScrollView>
+        </View>
       </View> 
     </ScrollView>
     : <AppLoader />
