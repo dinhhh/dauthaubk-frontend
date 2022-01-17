@@ -9,6 +9,8 @@ import { API_PATH } from "../config/Api";
 import AppLoader from "../components/AppLoader";
 import { BaseStyles } from "../constants/BaseStyles";
 import { SORT_ORDER } from "../constants/NameConstants";
+import NoData from "../components/NoData";
+import { convertCostToString } from "../utils/CurrencyFormat";
 
 const TableView = ({ tableData, setFetched, widthArr }) => {
   
@@ -31,20 +33,32 @@ const TableView = ({ tableData, setFetched, widthArr }) => {
   </Table>);
 }
 
-const ChartView = ({ data, setFetched }) => {
+const ChartView = ({ data, setFetched, bubbleProperty }) => {
   if (data === null || data === undefined || data.length === 0) {
     setFetched(false);
     console.log("Data in chart view is empty....");
     return <View></View>
   }
 
+  const getLabel = ({ datum }) => {
+    if (bubbleProperty === "x") {
+      return `${datum.province}\n${datum.x}`
+    }
+
+    if (bubbleProperty === "y") {
+      return `${datum.province}\n${convertCostToString(datum.y)}`
+    }
+
+    return `${datum.province}`
+  }
+
   return (<VictoryScatter
     style={{ data: { fill: ({ datum }) => generateColor() } }}
-    bubbleProperty="y"
+    bubbleProperty={bubbleProperty}
     maxBubbleSize={25}
     minBubbleSize={5}
     data={data?.data}
-    labels={ ({ datum }) => `${datum.province}` }
+    labels={ ({ datum }) => getLabel({ datum }) }
   />);
 }
 
@@ -68,6 +82,7 @@ const BiddingInvitationBubbleChart = ({ route }) => {
   const [fetched, setFetched] = useState(false);
   const [sortOrderArr, setOrderArr] = useState([SORT_ORDER.ASC, SORT_ORDER.ASC, SORT_ORDER.ASC]);
   const [isEmptyData, setEmpty] = useState(false);
+  const [bubbleProperty, setBubbleProperty] = useState("x");
 
   const customSort = ( value, index ) => {
     console.log("Clicked on button has value ", value);
@@ -89,10 +104,12 @@ const BiddingInvitationBubbleChart = ({ route }) => {
         break;
       
       case BUTTON.SO_LUONG_GOI_THAU:
+        setBubbleProperty("x");
         temp.sort((a, b) => a[1] - b[1]);
         break;
 
       case BUTTON.TONG_GIA_TRI:
+        setBubbleProperty("y");
         temp.sort((a, b) => reverseStringToNumber(a[2]) - reverseStringToNumber(b[2]));
         break;
 
@@ -123,42 +140,43 @@ const BiddingInvitationBubbleChart = ({ route }) => {
   const tableHeader = [elementButton(BUTTON.DIA_PHUONG, 0), elementButton(BUTTON.SO_LUONG_GOI_THAU, 1), elementButton(BUTTON.TONG_GIA_TRI, 2)];
 
   useEffect(async () => {
-    if ( true ) {
-      const requestBody = {
-        "keyword": route?.params?.keyword
-      }
-      
-      const response = await postApiWithOutPaging(API_PATH.BUBBLE_CHART_INVITATIONS, requestBody);
-
-      if (response.ok) {
-        const resData = await response.json();
-        
-        const temp = [];
-        resData["data"].forEach(element => {
-          const rowData = [];
-          rowData.push(element["province"]);
-          rowData.push(element["x"]);
-    
-          var formatter = new Intl.NumberFormat('vn-VN', {
-            style: 'currency',
-            currency: 'VND',
-          });
-          rowData.push(formatter.format(element["y"]));
-          temp.push(rowData);
-        });
-
-        setTableData(temp);
-        setData(resData);
-        setFetched(true);
-      }
+    const requestBody = {
+      "keyword": route?.params?.keyword
     }
+    
+    const response = await postApiWithOutPaging(API_PATH.BUBBLE_CHART_INVITATIONS, requestBody);
+
+    if (response.ok) {
+      const resData = await response.json();
+      
+      const temp = [];
+      if (resData["data"].length === 0) {
+        setEmpty(true);
+      }
+      resData["data"].forEach(element => {
+        const rowData = [];
+        rowData.push(element["province"]);
+        rowData.push(element["x"]);
+        rowData.push(convertCostToString(element["y"]));
+
+        temp.push(rowData);
+      });
+
+      setTableData(temp);
+      setData(resData);
+      setFetched(true);
+      }
   }, []);
+
+  if (isEmptyData) {
+    return <NoData />;
+  }
   
   return (
     fetched ? 
     <ScrollView>
       <View>
-        <ChartView data={data} setFetched={setFetched} />
+        <ChartView data={data} setFetched={setFetched} bubbleProperty={bubbleProperty} />
         <View style={styles.container}>
           <ScrollView horizontal={true}>
             <View>
