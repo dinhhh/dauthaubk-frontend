@@ -179,7 +179,7 @@ const ContractorSearch = ({ navigation }) => {
       <Text
         style={styles.emptyListStyle}
         onPress={() => getItem( item )}>
-        No Data Found
+        Không có dữ liệu
       </Text>
     );
   };

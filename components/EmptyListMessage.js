@@ -5,7 +5,7 @@ const EmptyListMessage = ({ item }) => {
   return (
     <Text
       onPress={() => console.log("Clicked on empty flat list")}>
-      No Data Found
+      Không có dữ liệu
     </Text>
   );
 };

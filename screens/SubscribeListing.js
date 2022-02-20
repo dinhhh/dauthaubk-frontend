@@ -38,7 +38,7 @@ const SubscribeListing = ({ navigation, route }) => {
       
       if (response.ok) {
         const responseJson = await response.json();
-        setBiddingResults(responseJson["Thông báo trúng thầu"]);
+        setBiddingResults(responseJson["Kết quả trúng thầu"]);
         setBiddingSelectPlan(responseJson["Kế hoạch lựa chọn nhà thầu"]);
         setBiddingInvitations(responseJson["Thông báo mời thầu"]);
       } else {
@@ -79,6 +79,8 @@ const SubscribeListing = ({ navigation, route }) => {
         winCost={item["Kết quả"]["Giá trúng thầu"]}
         biddingId={item["Thông tin chi tiết"]["Số TBMT"]}
         getBiddingId={() => console.log("Clicked on")}
+        navigate={navigation.navigate}
+        destination={"BiddingDetails"}
       />
     } catch (e) {
       return <Text>Error when render item in flat list</Text>
